@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buildathon Project Ideas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e6ed;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .categories {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .category {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+        
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .project {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .project:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f8fafc;
+            flex: 1;
+        }
+        
+        .difficulty {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 1rem;
+        }
+        
+        .difficulty.beginner {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .difficulty.intermediate {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .difficulty.advanced {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .project-description {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .requirements {
+            margin-bottom: 1rem;
+        }
+        
+        .requirements h4 {
+            color: #f1f5f9;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .requirements ul {
+            list-style: none;
+            color: #94a3b8;
+        }
+        
+        .requirements li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .requirements li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tech-tag {
+            background: rgba(102, 126, 234, 0.2);
+            color: #a5b4fc;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .projects {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .difficulty {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Buildathon Project Ideas</h1>
+            <p>Choose your next challenge from our curated collection of innovative projects. Each project includes difficulty level, requirements, and suggested tech stack.</p>
+        </div>
+        
+        <div class="categories">
+            <!-- AI & ML Projects -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🤖</div>
+                    <div class="category-title">AI & Machine Learning</div>
+                </div>
+                <div class="projects">
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Visual Memory Search</div>
+                            <div class="difficulty advanced">Advanced</div>
+                        </div>
+                        <div class="project-description">
+                            Search your screenshot history using natural language queries for both text content and visual elements.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Accept folder of screenshots</li>
+                                <li>Extract both OCR text and visual descriptions</li>
+                                <li>Handle queries like "error message about auth" or "screenshot with blue button"</li>
+                                <li>Return top 5 matches with confidence scores</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Computer Vision</span>
+                            <span class="tech-tag">OCR</span>
+                            <span class="tech-tag">NLP</span>
+                            <span class="tech-tag">Vector Search</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Voice-to-Slide Generator</div>
+                            <div class="difficulty intermediate">Intermediate</div>
+                        </div>
+                        <div class="project-description">
+                            Generate a polished slide deck from a 3-minute spoken prompt with automated content structuring.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Upload or record audio input</li>
+                                <li>Output deck as HTML presentation or PDF</li>
+                                <li>Generate ≥5 slides with speaker notes</li>
+                                <li>Automated content structuring and design</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Speech-to-Text</span>
+                            <span class="tech-tag">GPT/Claude</span>
+                            <span class="tech-tag">HTML/CSS</span>
+                            <span class="tech-tag">PDF Generation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Language Learning Buddy</div>
+                            <div class="difficulty beginner">Beginner</div>
+                        </div>
+                        <div class="project-description">
+                            Create a conversational chatbot that helps learners practice phrases in a new language with cultural tips.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Interactive conversational practice</li>
+                                <li>Multiple language support</li>
+                                <li>Daily cultural tip generator</li>
+                                <li>Progress tracking and feedback</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">ChatGPT/Claude</span>
+                            <span class="tech-tag">React/Vue</span>
+                            <span class="tech-tag">Translation APIs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Calorie Tracking with Vision</div>
+                            <div class="difficulty intermediate">Intermediate</div>
+                        </div>
+                        <div class="project-description">
+                            Build a calorie-tracking app using GPT-4 Vision for automatic food detection and nutritional analysis.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Camera integration for food photos</li>
+                                <li>AI-powered food recognition</li>
+                                <li>Calorie and nutrition calculation</li>
+                                <li>Daily tracking and analytics</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">GPT-4 Vision</span>
+                            <span class="tech-tag">Mobile Dev</span>
+                            <span class="tech-tag">Database</span>
+                            <span class="tech-tag">Nutrition APIs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data Analytics & Insights -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">📊</div>
+                    <div class="category-title">Data Analytics & Insights</div>
+                </div>
+                <div class="projects">
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Employee Engagement Pulse</div>
+                            <div class="difficulty advanced">Advanced</div>
+                        </div>
+                        <div class="project-description">
+                            Provide managers with a weekly sentiment dashboard built from all messages in configurable Slack channels.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Monitor user-defined Slack channels (threads + reactions)</li>
+                                <li>Run text & emoji sentiment analysis on every message</li>
+                                <li>Aggregate daily mood into weekly trends with burnout warnings</li>
+                                <li>Generate actionable, team-level insights for managers</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Slack API</span>
+                            <span class="tech-tag">Sentiment Analysis</span>
+                            <span class="tech-tag">Dashboard</span>
+                            <span class="tech-tag">Data Visualization</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Codebase Time Machine</div>
+                            <div class="difficulty advanced">Advanced</div>
+                        </div>
+                        <div class="project-description">
+                            Navigate any codebase through time, understanding evolution of features and architectural decisions.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Clone repo and analyze full git history</li>
+                                <li>Build semantic understanding of code changes over time</li>
+                                <li>Answer questions like "Why was this pattern introduced?"</li>
+                                <li>Visualize code ownership and complexity trends</li>
+                                <li>Link commits to business features/decisions</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Git Analysis</span>
+                            <span class="tech-tag">Code Parsing</span>
+                            <span class="tech-tag">Graph Visualization</span>
+                            <span class="tech-tag">NLP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Universal Knowledge Graph Builder</div>
+                            <div class="difficulty advanced">Advanced</div>
+                        </div>
+                        <div class="project-description">
+                            Convert a document archive into an interactive knowledge graph with natural language Q&A capabilities.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Ingest TXT files and URLs (≤100 MB total)</li>
+                                <li>Build graph of concepts with node/edge visualization</li>
+                                <li>Support natural language questions over the graph</li>
+                                <li>Interactive graph exploration interface</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Graph Databases</span>
+                            <span class="tech-tag">NLP</span>
+                            <span class="tech-tag">D3.js</span>
+                            <span class="tech-tag">Vector Embeddings</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Productivity & Workflow -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">⚡</div>
+                    <div class="category-title">Productivity & Workflow</div>
+                </div>
+                <div class="projects">
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Mental Fitness Journal</div>
+                            <div class="difficulty beginner">Beginner</div>
+                        </div>
+                        <div class="project-description">
+                            Create a journaling app where users enter daily reflections, and the system generates mood summaries and motivational feedback.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Daily reflection entry interface</li>
+                                <li>Automated mood analysis and summaries</li>
+                                <li>Personalized affirmations and reflections</li>
+                                <li>Progress tracking and insights</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Notion API</span>
+                            <span class="tech-tag">GPT</span>
+                            <span class="tech-tag">Zapier/Make</span>
+                            <span class="tech-tag">Sentiment Analysis</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Smart Volunteer Matcher</div>
+                            <div class="difficulty intermediate">Intermediate</div>
+                        </div>
+                        <div class="project-description">
+                            Build a system where volunteers register skills/interests, and the app automatically matches and connects them with opportunities.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Volunteer skill and interest registration</li>
+                                <li>Integration with service opportunity databases</li>
+                                <li>Automated matching algorithm</li>
+                                <li>Automatic intro email generation</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Airtable</span>
+                            <span class="tech-tag">Softr</span>
+                            <span class="tech-tag">n8n/Make</span>
+                            <span class="tech-tag">Email APIs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Career Path Compass</div>
+                            <div class="difficulty intermediate">Intermediate</div>
+                        </div>
+                        <div class="project-description">
+                            Users enter their skills and interests, and AI suggests possible career paths with growth resources and gap analysis.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Skills and interests assessment</li>
+                                <li>AI-powered career path recommendations</li>
+                                <li>Resource suggestions (courses, mentors, communities)</li>
+                                <li>Resume analysis and gap identification</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Airtable</span>
+                            <span class="tech-tag">GPT</span>
+                            <span class="tech-tag">Softr/Glide</span>
+                            <span class="tech-tag">Career APIs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Community & Social -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🤝</div>
+                    <div class="category-title">Community & Social</div>
+                </div>
+                <div class="projects">
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Job Referral Hub</div>
+                            <div class="difficulty beginner">Beginner</div>
+                        </div>
+                        <div class="project-description">
+                            Build a web-based referral board where community members share job opportunities and connect directly with candidates.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Job opportunity posting interface</li>
+                                <li>Candidate application system</li>
+                                <li>Automated email connections</li>
+                                <li>Resume attachment handling</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Glide/Softr</span>
+                            <span class="tech-tag">Airtable</span>
+                            <span class="tech-tag">Zapier/Make</span>
+                            <span class="tech-tag">Email APIs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">YouTube Clone</div>
+                            <div class="difficulty advanced">Advanced</div>
+                        </div>
+                        <div class="project-description">
+                            Create a full-featured video sharing platform with user authentication, video uploads, comments, and engagement features.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>User authentication and profiles</li>
+                                <li>Video upload and streaming</li>
+                                <li>Comment and like systems</li>
+                                <li>Search and recommendation engine</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">React/Vue</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Video Processing</span>
+                            <span class="tech-tag">Database</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lifestyle & Personal -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🌟</div>
+                    <div class="category-title">Lifestyle & Personal</div>
+                </div>
+                <div class="projects">
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">AI Travel Buddy</div>
+                            <div class="difficulty beginner">Beginner</div>
+                        </div>
+                        <div class="project-description">
+                            Input destination and trip length, AI creates a suggested day-by-day itinerary with restaurants and attractions based on interests.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Destination and preference input</li>
+                                <li>AI-generated day-by-day itineraries</li>
+                                <li>Restaurant and attraction recommendations</li>
+                                <li>Budget-aware planning and local phrases</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">GPT</span>
+                            <span class="tech-tag">Notion/Airtable</span>
+                            <span class="tech-tag">Softr</span>
+                            <span class="tech-tag">Maps APIs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project">
+                        <div class="project-header">
+                            <div class="project-title">Wellness Recipe Recommender</div>
+                            <div class="difficulty beginner">Beginner</div>
+                        </div>
+                        <div class="project-description">
+                            User enters mood/energy level or available ingredients, and AI suggests personalized recipes or snacks with nutritional analysis.
+                        </div>
+                        <div class="requirements">
+                            <h4>Requirements</h4>
+                            <ul>
+                                <li>Mood and ingredient input interface</li>
+                                <li>AI-powered recipe recommendations</li>
+                                <li>Nutritional analysis and tracking</li>
+                                <li>Weekly meal plan export functionality</li>
+                            </ul>
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">GPT</span>
+                            <span class="tech-tag">Airtable</span>
+                            <span class="tech-tag">Zapier/Make</span>
+                            <span class="tech-tag">Google Sheets</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
