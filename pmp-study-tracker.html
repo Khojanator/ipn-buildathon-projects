@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMP Study Tracker – 30 Day Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #2a3444;
+    --gold: #e8a020;
+    --gold-dim: #a06d10;
+    --amber: #f0c040;
+    --text: #c9d1d9;
+    --text-dim: #6e7c8e;
+    --text-bright: #f0f6fc;
+    --green: #3fb950;
+    --green-dim: #1a4025;
+    --red: #f85149;
+    --today: #1a2d4a;
+    --today-border: #2d6aad;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── HEADER ── */
+  #app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,17,23,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 10px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .app-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+
+  .app-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  #settings-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  #settings-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* Progress bar */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    white-space: nowrap;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .day-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── SETUP MODAL ── */
+  #setup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #setup-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    max-width: 380px;
+    width: 100%;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .modal-sub {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .field-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .field-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 20px;
+  }
+  .field-input:focus { border-color: var(--gold); }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--gold);
+    color: #0d1117;
+    border: none;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 12px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--amber); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 9px 14px;
+    cursor: pointer;
+    margin-top: 12px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .btn-danger:hover { background: rgba(248,81,73,0.1); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 9px 14px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── PHASE HEADERS ── */
+  .phase-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    padding: 22px 16px 8px;
+    border-bottom: 1px solid var(--border);
+    margin: 0 0 0 0;
+  }
+
+  /* ── DAY CARDS ── */
+  .day-card {
+    margin: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.3s, opacity 0.3s;
+    background: var(--surface);
+  }
+
+  .day-card.is-today {
+    border-color: var(--today-border);
+    background: var(--today);
+    box-shadow: 0 0 0 1px rgba(45,106,173,0.3), 0 4px 20px rgba(45,106,173,0.12);
+  }
+
+  .day-card.is-done {
+    opacity: 0.55;
+    border-color: var(--green-dim);
+  }
+
+  .day-card.is-special {
+    border-color: var(--gold-dim);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    padding: 13px 14px;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .day-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--text-dim);
+    line-height: 1;
+    min-width: 36px;
+    transition: color 0.3s;
+  }
+
+  .day-card.is-today .day-number { color: var(--amber); }
+  .day-card.is-done .day-number { color: var(--green); }
+  .day-card.is-special .day-number { color: var(--gold); }
+
+  .day-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .day-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .day-card.is-today .day-label { color: var(--text-bright); }
+
+  .day-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .day-status {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .today-pill {
+    background: var(--today-border);
+    color: var(--text-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .chevron {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .day-body {
+    display: none;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .day-body.open { display: block; }
+
+  /* ── TASKS ── */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(42,52,68,0.5);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.2s;
+  }
+
+  .task-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 0.7rem;
+  }
+
+  .task-item.checked .task-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .task-text {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text);
+    transition: color 0.2s;
+    flex: 1;
+  }
+
+  .task-item.checked .task-text {
+    color: var(--text-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-dim);
+  }
+
+  .task-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gold-dim);
+    margin-top: 3px;
+  }
+
+  /* ── SPECIAL DAYS ── */
+  .judgement-banner {
+    background: linear-gradient(135deg, #1a0f00, #2a1a00);
+    border: 1px solid var(--gold-dim);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 10px 0 6px;
+    text-align: center;
+  }
+
+  .judgement-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .judgement-sub {
+    font-size: 0.75rem;
+    color: var(--gold-dim);
+  }
+
+  .rest-banner {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 10px 0 6px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── CELEBRATION ── */
+  #celebration {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0,0,0,0.9);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 32px;
+  }
+  #celebration.active { display: flex; }
+
+  .celebration-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .celebration-sub {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ── UTILS ── */
+  .mt4 { margin-top: 4px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  @media (min-width: 520px) {
+    #app-header { padding: 16px 24px 12px; }
+    .day-card { margin: 10px 16px; }
+    .phase-header { padding: 22px 20px 8px; }
+    .day-body { padding: 0 18px 16px; }
+    .day-header { padding: 15px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header id="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">PMP Study Tracker</div>
+      <div class="app-subtitle">30-Day · 60-Hour Plan</div>
+    </div>
+    <button id="settings-btn" onclick="openSettings()">⚙ Settings</button>
+  </div>
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+    <div class="day-badge" id="day-badge">Day —</div>
+  </div>
+</header>
+
+<!-- ── SETUP / SETTINGS MODAL ── -->
+<div id="setup-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Welcome.</div>
+    <div class="modal-sub" id="modal-sub">Enter the date you started (or plan to start) your 30-day PMP study plan. Your progress will be saved automatically in this browser.</div>
+    <label class="field-label" for="start-date-input">Study start date</label>
+    <input type="date" class="field-input" id="start-date-input">
+    <button class="btn-primary" onclick="saveSettings()">Begin Mission</button>
+    <div id="reset-section" style="display:none; margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+      <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:10px;">Danger zone — this cannot be undone.</div>
+      <button class="btn-danger" onclick="confirmReset()">Reset All Progress</button>
+    </div>
+    <button class="btn-secondary" id="modal-cancel-btn" style="display:none" onclick="closeSettings()">Cancel</button>
+  </div>
+</div>
+
+<!-- ── CELEBRATION ── -->
+<div id="celebration">
+  <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+  <div class="celebration-title">Plan Complete!</div>
+  <div class="celebration-sub">You've checked off every item.<br>Carrot cake. Beer. Cherry Coke.<br>You earned it.</div>
+  <button class="btn-primary" style="max-width:220px; margin-top:4px" onclick="document.getElementById('celebration').classList.remove('active')">Close</button>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<main id="main"></main>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const PLAN = [
+  {
+    phase: "Phase 1 — Core Learning",
+    days: [
+      { id: 1, label: "Kickoff", tasks: ["Introduction", "Exam Details"] },
+      { id: 2, label: "Terminology", tasks: ["Project Management Terms"] },
+      { id: 3, label: "Principles I", tasks: ["Project Management Principles"] },
+      { id: 4, label: "Principles II", tasks: ["Project Management Principles (cont.)"] },
+      { id: 5, label: "Traditional PM", tasks: ["Introduction to Traditional / Predictive Project Management"] },
+    ]
+  },
+  {
+    phase: "Phase 2 — Predictive & Agile",
+    days: [
+      { id: "6-8", label: "Predictive Processes", span: [6,7,8], tasks: ["Processes to manage a Traditional / Predictive Project"] },
+      { id: "9-10", label: "Agile Delivery", span: [9,10], tasks: ["Agile Project Management Methods and Delivery"] },
+      { id: 11, label: "Agile Stakeholders", tasks: ["Agile Stakeholder Management"] },
+      { id: 12, label: "Agile Planning", tasks: ["Agile Planning, Problem Resolution and Continuous Improvement"] },
+    ]
+  },
+  {
+    phase: "Phase 3 — Hybrid, Ethics & Application",
+    days: [
+      { id: 13, label: "Hybrid + Ethics", tasks: [
+        "Hybrid Project Management",
+        "Ethics and Professional Responsibilities",
+        "PMP Application — list your projects and begin writing descriptions"
+      ]},
+      { id: "14-15", label: "ECO Review", span: [14,15], tasks: ["PMP Exam Content Outline (ECO) Review"] },
+      { id: 16, label: "Mindset & Exam Tips", tasks: ["PMP Mindset", "Exam Tips and Conclusion", "Drag and Drop Questions"] },
+    ]
+  },
+  {
+    phase: "Phase 4 — Submit & Mock Exams",
+    days: [
+      { id: "18-19", label: "Mock Exam + Apply", span: [18,19], note: "4-hour day", tasks: [
+        "Mock Exam (full run-through)",
+        "Obtain 35-Hour Training Certificate",
+        "Submit Application to PMI"
+      ]},
+      { id: 20, label: "Simulator Exam 1", tasks: ["Simulator Mock Exam 1"] },
+      { id: 21, label: "Simulator Exam 2", tasks: ["Simulator Mock Exam 2"] },
+      { id: 22, label: "Simulator Exam 3", tasks: ["Simulator Mock Exam 3 (Udemy Practice Exam Course)"] },
+      { id: 23, label: "Simulator Exam 4", tasks: ["Simulator Mock Exam 4 (Udemy Practice Exam Course)"] },
+      { id: 24, label: "Simulator Exam 5", tasks: [
+        "Simulator Mock Exam 5 (Udemy Practice Exam Course)",
+        "Schedule your ACTUAL PMP Exam (4–5 days from now)"
+      ]},
+      { id: 25, label: "Simulator Exam 6", tasks: ["Simulator Mock Exam 6 (Udemy Practice Exam Course)"] },
+    ]
+  },
+  {
+    phase: "Phase 5 — Final Push",
+    days: [
+      { id: 26, label: "Final Review", tasks: [
+        "Review the PMP Mindset",
+        "Review the Exam Content Outline (ECO)",
+        "Review EVM and PERT Formulas"
+      ]},
+      { id: 27, label: "Rest Day", special: "rest", tasks: [
+        "REST — Do NOT study",
+        "Wake at 5AM to reset sleep schedule",
+        "No alcohol or sleep-disruptors",
+        "Stay calm — accept uncertainty, keep nerves quiet"
+      ]},
+      { id: 28, label: "JUDGEMENT DAY", special: "exam", tasks: [
+        "Wake up early",
+        "Exercise to get fully awake",
+        "Dress in blue",
+        "Eat a well-balanced meal — limit coffee to one small cup",
+        "Take the actual PMP Exam — remember the mindset",
+        "Celebrate: Carrot cake + beer or Cherry Coke 🎉"
+      ]},
+    ]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const LS_START = 'pmp_start_date';
+const LS_CHECKS = 'pmp_checks';
+
+function getState() {
+  return {
+    startDate: localStorage.getItem(LS_START) || null,
+    checks: JSON.parse(localStorage.getItem(LS_CHECKS) || '{}')
+  };
+}
+
+function saveChecks(checks) {
+  localStorage.setItem(LS_CHECKS, JSON.stringify(checks));
+}
+
+function saveStartDate(d) {
+  localStorage.setItem(LS_START, d);
+}
+
+function todayDayNumber(startDate) {
+  if (!startDate) return null;
+  const start = new Date(startDate + 'T00:00:00');
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const diff = Math.floor((now - start) / 86400000);
+  return diff + 1; // 1-indexed
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function dayContainsNumber(day, n) {
+  if (day.span) return day.span.includes(n);
+  return day.id === n;
+}
+
+function isTodayCard(day, todayNum) {
+  if (!todayNum) return false;
+  return dayContainsNumber(day, todayNum);
+}
+
+function taskKey(dayId, taskIdx) {
+  return `${dayId}_${taskIdx}`;
+}
+
+function allTasksDone(day, checks) {
+  return day.tasks.every((_, i) => checks[taskKey(day.id, i)]);
+}
+
+function countChecked(day, checks) {
+  return day.tasks.filter((_, i) => checks[taskKey(day.id, i)]).length;
+}
+
+function totalTasks() {
+  return PLAN.flatMap(p => p.days).reduce((s, d) => s + d.tasks.length, 0);
+}
+
+function totalChecked(checks) {
+  return Object.values(checks).filter(Boolean).length;
+}
+
+function render() {
+  const { startDate, checks } = getState();
+  const todayNum = todayDayNumber(startDate);
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  // Find today's card to auto-open
+  let todayCardId = null;
+  PLAN.forEach(phase => {
+    phase.days.forEach(day => {
+      if (isTodayCard(day, todayNum)) todayCardId = day.id;
+    });
+  });
+
+  PLAN.forEach(phase => {
+    const phaseEl = document.createElement('div');
+
+    const ph = document.createElement('div');
+    ph.className = 'phase-header';
+    ph.textContent = phase.phase;
+    phaseEl.appendChild(ph);
+
+    phase.days.forEach(day => {
+      const isToday = isTodayCard(day, todayNum);
+      const isDone = allTasksDone(day, checks);
+      const checked = countChecked(day, checks);
+      const total = day.tasks.length;
+
+      const card = document.createElement('div');
+      card.className = 'day-card' +
+        (isToday ? ' is-today' : '') +
+        (isDone ? ' is-done' : '') +
+        (day.special === 'exam' ? ' is-special' : '');
+
+      // Header
+      const header = document.createElement('div');
+      header.className = 'day-header';
+
+      const numEl = document.createElement('div');
+      numEl.className = 'day-number';
+      numEl.textContent = day.id;
+
+      const meta = document.createElement('div');
+      meta.className = 'day-meta';
+
+      const labelEl = document.createElement('div');
+      labelEl.className = 'day-label';
+      labelEl.textContent = `Day ${day.id} — ${day.label}`;
+      if (day.note) {
+        const noteSpan = document.createElement('span');
+        noteSpan.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold-dim);margin-left:6px;font-weight:400;';
+        noteSpan.textContent = `(${day.note})`;
+        labelEl.appendChild(noteSpan);
+      }
+      meta.appendChild(labelEl);
+
+      const countEl = document.createElement('div');
+      countEl.className = 'day-count';
+      countEl.textContent = isDone ? '✓ Complete' : `${checked}/${total} tasks`;
+      meta.appendChild(countEl);
+
+      const rightGroup = document.createElement('div');
+      rightGroup.style.cssText = 'display:flex;align-items:center;gap:6px;flex-shrink:0;';
+
+      if (isToday) {
+        const pill = document.createElement('span');
+        pill.className = 'today-pill';
+        pill.textContent = 'Today';
+        rightGroup.appendChild(pill);
+      }
+
+      const statusEl = document.createElement('div');
+      statusEl.className = 'day-status';
+      statusEl.textContent = isDone ? '✓' : isToday ? '▸' : '';
+      rightGroup.appendChild(statusEl);
+
+      const chevron = document.createElement('div');
+      chevron.className = 'chevron';
+      chevron.textContent = '›';
+      rightGroup.appendChild(chevron);
+
+      header.appendChild(numEl);
+      header.appendChild(meta);
+      header.appendChild(rightGroup);
+
+      // Body
+      const body = document.createElement('div');
+      body.className = 'day-body' + (isToday ? ' open' : '');
+      chevron.style.transform = (isToday ? ' open' : '') ? 'rotate(90deg)' : '';
+      if (isToday) chevron.style.transform = 'rotate(90deg)';
+
+      // Special banners
+      if (day.special === 'exam') {
+        const banner = document.createElement('div');
+        banner.className = 'judgement-banner';
+        banner.innerHTML = '<div class="judgement-title">☀ Judgement Day</div><div class="judgement-sub">This is what you trained for. Remember the mindset.</div>';
+        body.appendChild(banner);
+      } else if (day.special === 'rest') {
+        const banner = document.createElement('div');
+        banner.className = 'rest-banner';
+        banner.innerHTML = '🌙 <strong style="color:var(--text)">Rest day.</strong><br>No studying. Protect your sleep. Calm your nerves.';
+        body.appendChild(banner);
+      }
+
+      // Tasks
+      day.tasks.forEach((task, i) => {
+        const key = taskKey(day.id, i);
+        const isChecked = !!checks[key];
+
+        const item = document.createElement('div');
+        item.className = 'task-item' + (isChecked ? ' checked' : '');
+
+        const chk = document.createElement('div');
+        chk.className = 'task-check';
+        chk.innerHTML = isChecked ? '✓' : '';
+
+        const txt = document.createElement('div');
+        txt.className = 'task-text';
+        txt.textContent = task;
+
+        item.appendChild(chk);
+        item.appendChild(txt);
+
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const { checks: c } = getState();
+          c[key] = !c[key];
+          saveChecks(c);
+          render();
+          updateHeader();
+          checkCelebration();
+        });
+
+        body.appendChild(item);
+      });
+
+      card.appendChild(header);
+      card.appendChild(body);
+
+      // Toggle open
+      header.addEventListener('click', () => {
+        const isOpen = body.classList.contains('open');
+        body.classList.toggle('open', !isOpen);
+        chevron.style.transform = !isOpen ? 'rotate(90deg)' : '';
+      });
+
+      phaseEl.appendChild(card);
+    });
+
+    main.appendChild(phaseEl);
+  });
+
+  updateHeader();
+}
+
+function updateHeader() {
+  const { startDate, checks } = getState();
+  const todayNum = todayDayNumber(startDate);
+  const checked = totalChecked(checks);
+  const total = totalTasks();
+  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  if (todayNum && todayNum >= 1 && todayNum <= 28) {
+    document.getElementById('day-badge').textContent = `Day ${todayNum}`;
+  } else if (todayNum > 28) {
+    document.getElementById('day-badge').textContent = `Done`;
+  } else {
+    document.getElementById('day-badge').textContent = `Day —`;
+  }
+}
+
+function checkCelebration() {
+  const { checks } = getState();
+  if (totalChecked(checks) === totalTasks()) {
+    document.getElementById('celebration').classList.add('active');
+  }
+}
+
+// ─── SETTINGS / SETUP ────────────────────────────────────────────────────────
+function openSetup() {
+  document.getElementById('modal-title').textContent = 'Welcome.';
+  document.getElementById('modal-sub').textContent = 'Set your study start date. Progress is saved automatically in this browser — no account needed.';
+  document.getElementById('reset-section').style.display = 'none';
+  document.getElementById('modal-cancel-btn').style.display = 'none';
+  document.getElementById('setup-overlay').classList.add('active');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('start-date-input').value = today;
+}
+
+function openSettings() {
+  const { startDate } = getState();
+  document.getElementById('modal-title').textContent = 'Settings';
+  document.getElementById('modal-sub').textContent = 'Update your start date or reset all progress.';
+  document.getElementById('reset-section').style.display = 'block';
+  document.getElementById('modal-cancel-btn').style.display = 'block';
+  if (startDate) document.getElementById('start-date-input').value = startDate;
+  document.getElementById('setup-overlay').classList.add('active');
+}
+
+function closeSettings() {
+  document.getElementById('setup-overlay').classList.remove('active');
+}
+
+function saveSettings() {
+  const val = document.getElementById('start-date-input').value;
+  if (!val) { alert('Please pick a date.'); return; }
+  saveStartDate(val);
+  closeSettings();
+  render();
+}
+
+function confirmReset() {
+  if (confirm('This will erase all checkmarks and your start date. Are you sure?')) {
+    localStorage.removeItem(LS_START);
+    localStorage.removeItem(LS_CHECKS);
+    closeSettings();
+    openSetup();
+    render();
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+(function init() {
+  const { startDate } = getState();
+  render();
+  if (!startDate) {
+    openSetup();
+  }
+})();
+</script>
+</body>
+</html>
